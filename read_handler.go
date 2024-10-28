@@ -6,8 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/openshift/openshift-apiserver/pkg/project/apis/project"
-	"github.com/openshift/openshift-apiserver/pkg/project/util"
+	openshiftapiv1 "github.com/openshift/api/project/v1"
 	kerrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/rest"
@@ -37,7 +36,7 @@ func (h *getNamespaceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// fetch project
-	project := project.Project{}
+	project := openshiftapiv1.Project{}
 	name := r.PathValue("name")
 	if err := cli.Get(r.Context(), types.NamespacedName{Name: name}, &project); err != nil {
 		serr := &kerrors.StatusError{}
@@ -53,13 +52,7 @@ func (h *getNamespaceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// map back to namespace
-	namespace, err := util.ConvertProjectToExternal(&project)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
-		return
-	}
-
+	namespace := convertProjectToNamespace(&project)
 	encoded, err := json.Marshal(&namespace)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
