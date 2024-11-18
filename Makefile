@@ -7,6 +7,8 @@ GO ?= go
 
 GOLANG_CI ?= $(GO) run -modfile $(shell dirname $(ROOT_DIR))/hack/tools/golang-ci/go.mod github.com/golangci/golangci-lint/cmd/golangci-lint
 
+IMAGE_BUILDER ?= docker
+
 ## Local Folders
 $(LOCALBIN):
 	mkdir $(LOCALBIN)
@@ -33,3 +35,11 @@ tidy: ## Run go tidy against code.
 .PHONY: fmt
 fmt: ## Run go fmt against code.
 	$(GO) fmt ./...
+
+.PHONY: test
+test: ## Run go test against code.
+	$(GO) test ./...
+
+.PHONY: image-build
+image-build:
+	$(IMAGE_BUILDER) build -t namespace-lister:latest .
