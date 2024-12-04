@@ -1,11 +1,11 @@
-ROOT_DIR := $(realpath $(firstword $(MAKEFILE_LIST)))
+ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 LOCALBIN := $(ROOT_DIR)/bin
 
 OUTDIR := $(ROOT_DIR)/out
 
 GO ?= go
 
-GOLANG_CI ?= $(GO) run -modfile $(shell dirname $(ROOT_DIR))/hack/tools/golang-ci/go.mod github.com/golangci/golangci-lint/cmd/golangci-lint
+GOLANG_CI ?= $(GO) run -modfile $(ROOT_DIR)/hack/tools/golang-ci/go.mod github.com/golangci/golangci-lint/cmd/golangci-lint
 
 IMG ?= namespace-lister:latest
 IMAGE_BUILDER ?= docker
@@ -51,3 +51,12 @@ test: ## Run go test against code.
 .PHONY: image-build
 image-build:
 	$(IMAGE_BUILDER) build -t "$(IMG)" .
+
+.PHONY: generate-code
+generate-code: mockgen  ## Run go generate on the project.
+	@echo $(GO) generate ./...
+	@PATH=$(LOCALBIN):${PATH} $(GO) generate ./...
+
+.PHONY: mockgen
+mockgen: $(LOCALBIN) ## Install mockgen locally.
+	$(GO) build -modfile $(ROOT_DIR)/hack/tools/mockgen/go.mod -o $(LOCALBIN)/mockgen go.uber.org/mock/mockgen

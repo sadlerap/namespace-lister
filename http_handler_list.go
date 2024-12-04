@@ -7,19 +7,18 @@ import (
 	"net/http"
 
 	kerrors "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apiserver/pkg/authentication/authenticator"
 )
 
 var _ http.Handler = &ListNamespacesHandler{}
 
 type ListNamespacesHandler struct {
-	lister     NamespaceLister
-	userHeader string
+	lister NamespaceLister
 }
 
-func NewListNamespacesHandler(lister NamespaceLister, userHeader string) http.Handler {
+func NewListNamespacesHandler(lister NamespaceLister) http.Handler {
 	return &ListNamespacesHandler{
-		lister:     lister,
-		userHeader: userHeader,
+		lister: lister,
 	}
 }
 
@@ -28,8 +27,10 @@ func (h *ListNamespacesHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 	l := getLoggerFromContext(ctx)
 	l.Info("received list request")
 
+	ud := r.Context().Value(ContextKeyUserDetails).(*authenticator.Response)
+
 	// retrieve projects as the user
-	nn, err := h.lister.ListNamespaces(r.Context(), r.Header.Get(h.userHeader))
+	nn, err := h.lister.ListNamespaces(r.Context(), ud.User.GetName())
 	if err != nil {
 		serr := &kerrors.StatusError{}
 		if errors.As(err, &serr) {
