@@ -3,7 +3,13 @@ LOCALBIN := $(ROOT_DIR)/bin
 
 OUT_DIR := $(ROOT_DIR)/out
 
+GINKGO ?= ginkgo
 GO ?= go
+
+PERF_OUT_DIR := $(OUT_DIR)/perf
+PERF_CLUSTER_PROVIDER ?= kwokctl
+PERF_CLUSTER_KUBECONFIG ?= $(PERF_OUT_DIR)/namespace-lister-perf-test
+PERF_CLUSTER_PROVIDER_FLAGS ?= --disable-qps-limits
 
 GOLANG_CI ?= $(GO) run -modfile $(ROOT_DIR)/hack/tools/golang-ci/go.mod github.com/golangci/golangci-lint/cmd/golangci-lint
 
@@ -46,7 +52,15 @@ fmt: ## Run go fmt against code.
 
 .PHONY: test
 test: ## Run go test against code.
-	$(GO) test ./...
+	$(GINKGO) --label-filter='!perf'
+
+.PHONY: test-perf
+test-perf: ## Run performance tests
+	-$(PERF_CLUSTER_PROVIDER) delete cluster --name namespace-lister-perf-test
+	KUBECONFIG=$(PERF_CLUSTER_KUBECONFIG) $(PERF_CLUSTER_PROVIDER) create cluster \
+		--name namespace-lister-perf-test $(PERF_CLUSTER_PROVIDER_FLAGS)
+	KUBECONFIG=$(PERF_CLUSTER_KUBECONFIG) $(GINKGO) --label-filter='perf' \
+		--keep-going --procs=1 --flake-attempts 2 --output-dir=$(PERF_OUT_DIR)
 
 .PHONY: image-build
 image-build:
