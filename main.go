@@ -53,6 +53,8 @@ func run(l *slog.Logger) error {
 
 	// get config
 	cfg := ctrl.GetConfigOrDie()
+	cfg.QPS = 500
+	cfg.Burst = 500
 
 	// build the request authenticator
 	ar, err := NewAuthenticator(AuthenticatorOptions{
