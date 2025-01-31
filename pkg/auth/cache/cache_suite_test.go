@@ -1,4 +1,4 @@
-package main_test
+package cache_test
 
 import (
 	"testing"
@@ -7,9 +7,9 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestNamespaceLister(t *testing.T) {
+func TestCache(t *testing.T) {
 	t.Parallel()
 
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "NamespaceLister Suite")
+	RunSpecs(t, "Cache Suite")
 }

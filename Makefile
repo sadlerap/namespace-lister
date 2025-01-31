@@ -52,7 +52,7 @@ fmt: ## Run go fmt against code.
 
 .PHONY: test
 test: ## Run go test against code.
-	$(GINKGO) --label-filter='!perf'
+	$(GINKGO) --label-filter='!perf' ./pkg/... ./
 
 .PHONY: test-perf
 test-perf: ## Run performance tests
@@ -61,6 +61,7 @@ test-perf: ## Run performance tests
 		--name namespace-lister-perf-test $(PERF_CLUSTER_PROVIDER_FLAGS)
 	KUBECONFIG=$(PERF_CLUSTER_KUBECONFIG) $(GINKGO) --label-filter='perf' \
 		--keep-going --procs=1 --flake-attempts 2 --output-dir=$(PERF_OUT_DIR)
+	# -$(PERF_CLUSTER_PROVIDER) delete cluster --name namespace-lister-perf-test
 
 .PHONY: image-build
 image-build:
