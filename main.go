@@ -45,9 +45,11 @@ func run(l *slog.Logger) error {
 	var enableTLS bool
 	var tlsCertificatePath string
 	var tlsCertificateKeyPath string
+	var metricsListenAddress string
 	flag.BoolVar(&enableTLS, "enable-tls", true, "Toggle TLS enablement.")
 	flag.StringVar(&tlsCertificatePath, "cert-path", "", "Path to TLS certificate store.")
 	flag.StringVar(&tlsCertificateKeyPath, "key-path", "", "Path to TLS private key.")
+	flag.StringVar(&metricsListenAddress, "metrics-address", ":9443", "Address to serve the metrics endpoint on.")
 	flag.Parse()
 
 	// get config
@@ -89,9 +91,22 @@ func run(l *slog.Logger) error {
 	// create the namespace lister
 	nsl := NewNamespaceListerForSubject(accessCache)
 
+	// create metrics tracker
+	reg := NewDefaultRegistry()
+	metrics := NewMetrics(reg)
+
+	// serve metrics
+	metricsServer := NewMetricsServerBuilder().
+		WithAddress(metricsListenAddress).
+		WithTLS(enableTLS).
+		WithTLSConfig(loadTLSCert(l, tlsCertificatePath, tlsCertificateKeyPath)).
+		WithRegistry(reg).
+		Build()
+	go metricsServer.Serve(ctx)
+
 	// build http server
 	l.Info("building server")
-	s := NewServer(l, ar, nsl)
+	s := NewServer(l, ar, nsl, &metrics)
 
 	// configure TLS
 	s.WithTLS(enableTLS).

@@ -4,17 +4,32 @@ import (
 	"net/http"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-type metrics struct {
+func NewDefaultRegistry() *prometheus.Registry {
+	reg := prometheus.NewRegistry()
+	reg.MustRegister(
+		collectors.NewGoCollector(),
+		collectors.NewProcessCollector(collectors.ProcessCollectorOpts{
+			Namespace: "namespace_lister",
+		}),
+	)
+
+	return reg
+}
+
+type Metrics struct {
+	reg *prometheus.Registry
+
 	requestTiming  *prometheus.HistogramVec
 	requestCounter *prometheus.CounterVec
 	responseSize   *prometheus.HistogramVec
 	inFlightGauge  prometheus.Gauge
 }
 
-func newMetrics(reg prometheus.Registerer) metrics {
+func NewMetrics(reg *prometheus.Registry) Metrics {
 	requestTiming := prometheus.NewHistogramVec(
 		prometheus.HistogramOpts{
 			Namespace: "namespace_lister",
@@ -58,7 +73,6 @@ func newMetrics(reg prometheus.Registerer) metrics {
 				60.0,
 			},
 		}, []string{"code", "method"})
-	reg.MustRegister(requestTiming)
 
 	requestCounter := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
@@ -67,7 +81,6 @@ func newMetrics(reg prometheus.Registerer) metrics {
 			Name:      "counter",
 			Help:      "Number of requests completed",
 		}, []string{"code", "method"})
-	reg.MustRegister(requestCounter)
 
 	responseSize := prometheus.NewHistogramVec(
 		prometheus.HistogramOpts{
@@ -96,7 +109,6 @@ func newMetrics(reg prometheus.Registerer) metrics {
 				500000.0,
 			},
 		}, []string{"code", "method"})
-	reg.MustRegister(responseSize)
 
 	inFlightGauge := prometheus.NewGauge(
 		prometheus.GaugeOpts{
@@ -105,9 +117,11 @@ func newMetrics(reg prometheus.Registerer) metrics {
 			Name:      "requests_in_flight",
 			Help:      "Number of requests currently processing",
 		})
-	reg.MustRegister(inFlightGauge)
 
-	return metrics{
+	reg.MustRegister(requestTiming, requestCounter, responseSize, inFlightGauge)
+
+	return Metrics{
+		reg:            reg,
 		requestTiming:  requestTiming,
 		requestCounter: requestCounter,
 		responseSize:   responseSize,
@@ -115,9 +129,7 @@ func newMetrics(reg prometheus.Registerer) metrics {
 	}
 }
 
-func AddMetricsMiddleware(reg prometheus.Registerer, handler http.Handler) http.Handler {
-	m := newMetrics(reg)
-
+func (m *Metrics) AddMetricsMiddleware(handler http.Handler) http.Handler {
 	return promhttp.InstrumentHandlerDuration(
 		m.requestTiming,
 		promhttp.InstrumentHandlerCounter(
