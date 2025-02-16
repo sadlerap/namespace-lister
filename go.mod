@@ -9,7 +9,7 @@ require (
 	k8s.io/api v0.31.2
 	k8s.io/apimachinery v0.31.2
 	k8s.io/apiserver v0.31.0
-	k8s.io/kubernetes v1.31.2
+	k8s.io/kubernetes v1.32.2
 	sigs.k8s.io/controller-runtime v0.19.1
 )
 
