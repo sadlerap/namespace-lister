@@ -1,8 +1,8 @@
 module github.com/konflux-ci/namespace-lister/hack/tools/golang-ci
 
-go 1.22.1
+go 1.23
 
-toolchain go1.22.5
+toolchain go1.23.8
 
 require github.com/golangci/golangci-lint v1.61.0
 
@@ -29,7 +29,7 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bkielbasa/cyclop v1.2.1 // indirect
 	github.com/blizzy78/varnamelen v0.8.0 // indirect
-	github.com/bombsimon/wsl/v4 v4.4.1 // indirect
+	github.com/bombsimon/wsl/v4 v4.7.0 // indirect
 	github.com/breml/bidichk v0.2.7 // indirect
 	github.com/breml/errchkjson v0.3.6 // indirect
 	github.com/butuzov/ireturn v0.3.0 // indirect
@@ -173,11 +173,11 @@ require (
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/exp v0.0.0-20240904232852-e7e105dedf7e // indirect
 	golang.org/x/exp/typeparams v0.0.0-20240325151524-a685a6edb6d8 // indirect
-	golang.org/x/mod v0.21.0 // indirect
-	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/sys v0.25.0 // indirect
+	golang.org/x/mod v0.23.0 // indirect
+	golang.org/x/sync v0.11.0 // indirect
+	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/text v0.18.0 // indirect
-	golang.org/x/tools v0.24.0 // indirect
+	golang.org/x/tools v0.30.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
