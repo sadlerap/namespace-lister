@@ -1,8 +1,8 @@
 module github.com/konflux-ci/namespace-lister/hack/tools/golang-ci
 
-go 1.22.1
+go 1.24.0
 
-toolchain go1.22.5
+toolchain go1.24.6
 
 require github.com/golangci/golangci-lint v1.61.0
 
@@ -156,7 +156,7 @@ require (
 	github.com/tetafro/godot v1.4.17 // indirect
 	github.com/timakin/bodyclose v0.0.0-20240125160201-f835fa56326a // indirect
 	github.com/timonwong/loggercheck v0.9.4 // indirect
-	github.com/tomarrell/wrapcheck/v2 v2.9.0 // indirect
+	github.com/tomarrell/wrapcheck/v2 v2.12.0 // indirect
 	github.com/tommy-muehle/go-mnd/v2 v2.5.1 // indirect
 	github.com/ultraware/funlen v0.1.0 // indirect
 	github.com/ultraware/whitespace v0.1.1 // indirect
@@ -173,11 +173,13 @@ require (
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/exp v0.0.0-20240904232852-e7e105dedf7e // indirect
 	golang.org/x/exp/typeparams v0.0.0-20240325151524-a685a6edb6d8 // indirect
-	golang.org/x/mod v0.21.0 // indirect
-	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/sys v0.25.0 // indirect
+	golang.org/x/mod v0.30.0 // indirect
+	golang.org/x/sync v0.18.0 // indirect
+	golang.org/x/sys v0.38.0 // indirect
 	golang.org/x/text v0.18.0 // indirect
-	golang.org/x/tools v0.24.0 // indirect
+	golang.org/x/tools v0.39.0 // indirect
+	golang.org/x/tools/go/expect v0.1.1-deprecated // indirect
+	golang.org/x/tools/go/packages/packagestest v0.1.1-deprecated // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
