@@ -1,6 +1,6 @@
 module github.com/konflux-ci/namespace-lister/acceptance
 
-go 1.22.2
+go 1.24.0
 
 require (
 	github.com/cucumber/godog v0.14.1
@@ -60,7 +60,7 @@ require (
 	golang.org/x/sys v0.26.0 // indirect
 	golang.org/x/term v0.25.0 // indirect
 	golang.org/x/text v0.19.0 // indirect
-	golang.org/x/time v0.3.0 // indirect
+	golang.org/x/time v0.14.0 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.4.0 // indirect
 	google.golang.org/protobuf v1.35.1 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
