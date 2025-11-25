@@ -1,6 +1,6 @@
 module github.com/konflux-ci/namespace-lister/acceptance
 
-go 1.22.2
+go 1.23
 
 require (
 	github.com/cucumber/godog v0.14.1
